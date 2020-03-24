@@ -6,12 +6,16 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UserRepository } from './user.repository';
 import { JwtStrategy } from './jwt.strategy';
+import { EnvService } from '../config/env.service'
+
+
+const config = new EnvService().read()
 
 @Module({
   imports: [
-    PassportModule.register({ defaultStrategy: 'jwt' }),
+    PassportModule.register({ defaultStrategy: config.APP_AUTH_STRATEGY }),
     JwtModule.register({
-      secret: 'topSecret51',
+      secret: config.APP_AUTH_SECRET,
       signOptions: {
         expiresIn: 3600,
       }
