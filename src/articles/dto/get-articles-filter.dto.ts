@@ -1,4 +1,4 @@
-import { IsOptional, IsIn, IsNotEmpty } from "class-validator";
+import { IsOptional, IsIn, IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { ArticleStatus } from '../article-status.enum';
 
@@ -16,6 +16,7 @@ export class GetArticlesFilterDto {
   })
   @IsOptional()
   @IsNotEmpty()
+  @IsString()
   search: string;
 
   @ApiPropertyOptional({
@@ -23,6 +24,7 @@ export class GetArticlesFilterDto {
     default: 20,
   })
   @IsOptional()
+  @IsNumber()
   limit: number;
 
   @ApiPropertyOptional({
@@ -30,5 +32,6 @@ export class GetArticlesFilterDto {
     default: 0,
   })
   @IsOptional()
+  @IsNumber()
   offset: number;
 }
