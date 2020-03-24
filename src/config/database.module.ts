@@ -13,7 +13,8 @@ function DatabaseOrmModule() {
     username: config.DB_USER,
     password: config.DB_PASSWORD,
     database: config.DB_NAME,
-    synchronize: config.DB_SINCRONIZE
+    synchronize: config.DB_SINCRONIZE,
+    entities: [__dirname + '/../**/*.entity.{js,ts}'],
   })
 }
 
