@@ -14,6 +14,11 @@ export interface EnvData {
   DB_USER: string
   DB_PASSWORD: string
   DB_SINCRONIZE: boolean
+
+  // auth
+  APP_AUTH_SECRET: string
+  APP_AUTH_STRATEGY: string
+
 }
 
 export class EnvService {
