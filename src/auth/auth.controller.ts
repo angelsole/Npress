@@ -12,7 +12,7 @@ export class AuthController {
     return this.authService.singUp(authCredentialsDto);
   }
 
-  @Post('/singIn')
+  @Post('/singin')
   singIn(@Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto): Promise<{accessToken: string}> {
     return this.authService.singIn(authCredentialsDto);
   }

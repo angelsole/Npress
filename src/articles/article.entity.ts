@@ -19,6 +19,8 @@ export class Article extends BaseEntity {
   @ManyToOne(type => User, user => user.articles, { eager: false })
   user: User;
 
-  @Column()
+  @Column({
+    select: false
+  })
   userId: string;
 }

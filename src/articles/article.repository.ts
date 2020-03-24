@@ -9,14 +9,22 @@ import { GetArticlesFilterDto } from './dto/get-articles-filter.dto';
 export class ArticleRepository extends Repository<Article> {
 
   async getArticles(filterDto: GetArticlesFilterDto): Promise<Article[]> {
-    const { search } = filterDto;
-    const query = this.createQueryBuilder('article');
-
+    const { search, status, limit, offset } = filterDto;
+    const query = this.createQueryBuilder('article')
+    .innerJoin("article.user", "user")
+    .addSelect(["user.id", "user.username"])
+    .limit(limit)
+    .skip(offset)
+;
+    if (status) {
+      query.andWhere('article.status = :status', { status });
+    }
     if (search) {
-     query.where('article.title LIKE :search OR article.description LIKE :search', { search: `%${search}%` });
+     query.andWhere('article.title LIKE :search OR article.description LIKE :search', { search: `%${search}%` });
     }
 
     const articles = await query.getMany();
+
     return articles;
   }
 

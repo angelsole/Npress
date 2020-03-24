@@ -17,4 +17,18 @@ export class GetArticlesFilterDto {
   @IsOptional()
   @IsNotEmpty()
   search: string;
+
+  @ApiPropertyOptional({
+    description: 'Limit of article number retrieved.',
+    default: 20,
+  })
+  @IsOptional()
+  limit: number;
+
+  @ApiPropertyOptional({
+    description: 'Offset of article number retrieved.',
+    default: 0,
+  })
+  @IsOptional()
+  offset: number;
 }

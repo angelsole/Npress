@@ -11,7 +11,6 @@ import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
 
 @Controller('articles')
-@UseGuards(AuthGuard())
 export class ArticlesController {
   constructor(private articlesService: ArticlesService) {}
 
@@ -22,6 +21,7 @@ export class ArticlesController {
     return this.articlesService.getArticles(filterDto);
   }
   @Get()
+  @UseGuards(AuthGuard())
   getArticlesByUser(
     @Query(ValidationPipe) filterDto: GetArticlesFilterDto,
     @GetUser() user: User
@@ -38,16 +38,18 @@ export class ArticlesController {
   }
 
   @Post()
+  @UseGuards(AuthGuard())
   @UsePipes(ValidationPipe)
-  createTask(
-    @Body() createTaskDto: CreateArticleDto,
+  createArticle(
+    @Body() createArticleDto: CreateArticleDto,
     @GetUser() user: User
   ): Promise<Article> {
-    return this.articlesService.createArticle(createTaskDto, user);
+    return this.articlesService.createArticle(createArticleDto, user);
   }
 
   @Patch('/:id/status')
-  updateTaskStatus(
+  @UseGuards(AuthGuard())
+  updateArticleStatus(
     @Param('id') id: string,
     @Body('status', ArticleStatusValidationPipe) status: ArticleStatus,
     @GetUser() user: User
