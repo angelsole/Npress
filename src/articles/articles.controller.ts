@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Body, Param, Patch, Query, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiTags } from '@nestjs/swagger';
 
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
@@ -10,6 +11,7 @@ import { ArticleStatus } from './article-status.enum';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
 
+@ApiTags('Articles')
 @Controller('articles')
 export class ArticlesController {
   constructor(private articlesService: ArticlesService) {}
