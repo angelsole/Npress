@@ -5,11 +5,10 @@ import { ApiTags } from '@nestjs/swagger';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { GetArticlesFilterDto } from './dto/get-articles-filter.dto';
-import { ArticleStatusValidationPipe } from './pipes/article-status-validation.pipes';
 import { Article } from './article.entity';
-import { ArticleStatus } from './article-status.enum';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
+import { UpdateArticleDto } from './dto/update-article.dto';
 
 @ApiTags('Articles')
 @Controller('articles')
@@ -47,14 +46,14 @@ export class ArticlesController {
     return this.articlesService.createArticle(createArticleDto, user);
   }
 
-  @Patch('/:id/status')
+  @Patch('/:id')
   @UseGuards(AuthGuard())
   updateArticleStatus(
     @Param('id') id: string,
-    @Body('status', ArticleStatusValidationPipe) status: ArticleStatus,
+    @Body() article: UpdateArticleDto,
     @GetUser() user: User
   ) : Promise<Article> {
-    return this.articlesService.updateArticleStatus(id, status, user);
+    return this.articlesService.updateArticle(id, article, user);
   }
 
 }

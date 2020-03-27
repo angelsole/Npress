@@ -4,8 +4,8 @@ import { GetArticlesFilterDto } from './dto/get-Articles-filter.dto';
 import { ArticleRepository } from './article.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Article } from './article.entity';
-import { ArticleStatus } from './article-status.enum';
 import { User } from 'src/auth/user.entity';
+import { UpdateArticleDto } from './dto/update-article.dto';
 
 @Injectable()
 export class ArticlesService {
@@ -36,14 +36,19 @@ export class ArticlesService {
     return this.articleRepository.createArticle(createArticleDto, user);
   }
 
-  async updateArticleStatus(
-    id: string, status: ArticleStatus,
+  async updateArticle(
+    id: string,
+    newArticle: UpdateArticleDto,
     user: User
   ): Promise<Article> {
+    if (!newArticle) {
+      throw new BadRequestException(`Any value of article is required`)
+    }
     const article = await this.getArticleById(id, user);
-    article.status = status;
+    article.status = newArticle.status || article.status;
+    article.title = newArticle.title || article.title;
+    article.body = newArticle.body || article.body;
     await article.save();
     return article;
   }
-
 }
