@@ -3,6 +3,7 @@ import {
   IsOptional,
   IsIn,
   MinLength,
+  MaxLength,
   IsString,
   NotContains,
 } from 'class-validator';
@@ -34,6 +35,7 @@ export class UpdateArticleDto {
   @ApiProperty()
   @IsNotEmpty()
   @MinLength(5)
+  @MaxLength(200)
   @IsString()
   @IsOptional()
   @NotContains(' ')

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, MinLength, IsOptional, NotContains } from 'class-validator';
+import { IsNotEmpty, IsString, MinLength, IsOptional, NotContains, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateArticleDto {
@@ -16,6 +16,7 @@ export class CreateArticleDto {
   @ApiProperty()
   @IsNotEmpty()
   @MinLength(5)
+  @MaxLength(200)
   @IsString()
   @IsOptional()
   @NotContains(' ')
