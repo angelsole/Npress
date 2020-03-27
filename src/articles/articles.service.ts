@@ -25,11 +25,11 @@ export class ArticlesService {
   }
 
   async getArticleById(id: string, user: User): Promise<Article> {
-    const taksFound = await this.articleRepository.findOne({ where: { id, userId: user.id } });
-    if (!taksFound) {
+    const articleFound = await this.articleRepository.findOne({ where: { id, userId: user.id } });
+    if (!articleFound) {
       throw new NotFoundException(`Article with id ${id} not found`)
     }
-    return taksFound;
+    return articleFound;
   }
 
   async createArticle(createArticleDto: CreateArticleDto, user: User): Promise<Article> {
