@@ -1,9 +1,11 @@
-import { Repository, EntityRepository } from "typeorm";
+import { Repository, EntityRepository, TransactionManager } from "typeorm";
 import { Article } from "./article.entity";
 import { User } from "src/auth/user.entity";
 import { ArticleStatus } from "./article-status.enum";
 import { CreateArticleDto } from "./dto/create-article.dto";
 import { GetArticlesFilterDto } from './dto/get-articles-filter.dto';
+import { ConflictException, InternalServerErrorException } from "@nestjs/common";
+import { UpdateArticleDto } from "./dto/update-article.dto";
 
 @EntityRepository(Article)
 export class ArticleRepository extends Repository<Article> {
@@ -61,17 +63,47 @@ export class ArticleRepository extends Repository<Article> {
   }
 
   async createArticle(createTaskDto: CreateArticleDto, user: User): Promise<Article> {
-    const { title, body } = createTaskDto;
+    const { title, body, slug } = createTaskDto;
+
+    const formatString = (stringToParse) =>  {
+      return stringToParse
+      .replace(/[^\w\s]/gi, ' ')
+      .replace(/\s+/g, '-')
+    }
+
+    const formatedTitle = title.trim();
+    const formatedSlug = slug && formatString(slug.trim().toLowerCase());
+
     const article = new Article;
-    article.title = title;
+    article.title = formatedTitle;
     article.body = body;
+    article.slug = formatedSlug || formatString(formatedTitle);
     article.status = ArticleStatus.DRAFT;
     article.user = user;
-
-    await article.save();
+    try {
+      await article.save();
+    } catch (error) {
+      if (error.code === '23505') {
+        throw new ConflictException('Slug already exist');
+      } else {
+        throw new InternalServerErrorException();
+      }
+    }
 
     delete article.user;
 
+    return article;
+  }
+
+  async updateArticle(
+    article: Article,
+    newArticle: UpdateArticleDto,
+  ): Promise<Article> {
+    article.status = newArticle.status || article.status;
+    article.title = newArticle.title || article.title;
+    article.body = newArticle.body || article.body;
+    article.slug = newArticle.slug || article.slug;
+    await article.save();
     return article;
   }
 }

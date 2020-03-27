@@ -1,9 +1,16 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, OneToMany } from "typeorm";
+import {
+  BaseEntity,
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  Unique,
+  OneToMany
+} from "typeorm";
 import * as bcrypt from 'bcrypt';
 import { Article } from '../articles/article.entity';
 
 @Entity()
-@Unique(['username'])
+@Unique(['username', 'id'])
 export class User extends BaseEntity {
 
   @PrimaryGeneratedColumn('uuid')
@@ -18,7 +25,7 @@ export class User extends BaseEntity {
   @Column()
   salt: string;
 
-  @OneToMany(type => Article, article => article.user, { eager: true })
+  @OneToMany(() => Article, article => article.user, { eager: true })
   articles: Article[]
 
   async validatePassword(password: string): Promise<boolean> {

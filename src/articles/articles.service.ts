@@ -48,11 +48,7 @@ export class ArticlesService {
     if (!Object.entries(newArticle).length) {
       throw new BadRequestException(`Any value of article is required`)
     }
-    const article = await this.getArticleById(id, user);
-    article.status = newArticle.status || article.status;
-    article.title = newArticle.title || article.title;
-    article.body = newArticle.body || article.body;
-    await article.save();
-    return article;
+    const currentArticle = await this.getArticleById(id, user);
+    return this.articleRepository.updateArticle(currentArticle, newArticle);
   }
 }

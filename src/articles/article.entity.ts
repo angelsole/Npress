@@ -1,8 +1,18 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Unique,
+  UpdateDateColumn,
+} from "typeorm";
 import { User } from "src/auth/user.entity";
 import { ArticleStatus } from "./article-status.enum";
 
 @Entity()
+@Unique(['slug', 'userId'])
 export class Article extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: number;
@@ -16,7 +26,16 @@ export class Article extends BaseEntity {
   @Column()
   status: ArticleStatus;
 
-  @ManyToOne(type => User, user => user.articles, { eager: false })
+  @Column()
+  slug: string
+
+  @CreateDateColumn({ type:'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type:'timestamp' })
+  updatedAt: Date;
+
+  @ManyToOne(() => User, user => user.articles, { eager: false })
   user: User;
 
   @Column({
