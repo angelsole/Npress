@@ -9,16 +9,15 @@ import { GetArticlesFilterDto } from './dto/get-articles-filter.dto';
 export class ArticleRepository extends Repository<Article> {
 
   async getArticles(filterDto: GetArticlesFilterDto): Promise<Article[]> {
-    const { search, status, limit, offset } = filterDto;
+    const { search, limit, offset } = filterDto;
     const query = this.createQueryBuilder('article')
     .innerJoin("article.user", "user")
-    .addSelect(["user.id", "user.username"])
+    .addSelect(["user.username", "user.id"])
     .limit(limit)
     .skip(offset)
-;
-    if (status) {
-      query.andWhere('article.status = :status', { status });
-    }
+
+    query.andWhere('article.status = :status', { status: 'PUBLISHED'});
+
     if (search) {
      query.andWhere('article.title LIKE :search OR article.description LIKE :search', { search: `%${search}%` });
     }
@@ -28,15 +27,15 @@ export class ArticleRepository extends Repository<Article> {
     return articles;
   }
 
-  async getArticlesByUser(filterDto: GetArticlesFilterDto, user: User): Promise<Article[]> {
-    const { status, search } = filterDto;
-    const query = this.createQueryBuilder('article');
+  async getArticlesByUser(filterDto: GetArticlesFilterDto, paramUserId: string): Promise<Article[]> {
+    const { search, limit, offset } = filterDto;
+    const query = this.createQueryBuilder('article')
+    .limit(limit)
+    .skip(offset);
 
-    query.where('article.userId = :userId', { userId: user.id })
+    query.where('article.userId = :userId', { userId: paramUserId })
+    query.andWhere('article.status = :status', { status: 'PUBLISHED'});
 
-    if (status) {
-      query.andWhere('article.status = :status', { status });
-    }
     if (search) {
      query.andWhere('article.title LIKE :search OR article.description LIKE :search', { search: `%${search}%` });
     }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { GetArticlesFilterDto } from './dto/get-Articles-filter.dto';
 import { ArticleRepository } from './article.repository';
@@ -17,8 +17,11 @@ export class ArticlesService {
   async getArticles(filterDto: GetArticlesFilterDto): Promise<Article[]> {
     return this.articleRepository.getArticles(filterDto);
   }
-  async getArticlesByUser(filterDto: GetArticlesFilterDto, user: User): Promise<Article[]> {
-    return this.articleRepository.getArticlesByUser(filterDto, user);
+  async getArticlesByUser(filterDto: GetArticlesFilterDto, userId: string): Promise<Article[]> {
+    if (!userId || !userId.length) {
+      throw new BadRequestException(`User id is required`)
+    }
+    return this.articleRepository.getArticlesByUser(filterDto, userId);
   }
 
   async getArticleById(id: string, user: User): Promise<Article> {

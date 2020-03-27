@@ -22,15 +22,13 @@ export class ArticlesController {
   ) {
     return this.articlesService.getArticles(filterDto);
   }
-  @Get()
-  @UseGuards(AuthGuard())
+  @Get('/user')
   getArticlesByUser(
+    @Body('userId') userId: string,
     @Query(ValidationPipe) filterDto: GetArticlesFilterDto,
-    @GetUser() user: User
   ) {
-    return this.articlesService.getArticlesByUser(filterDto, user);
+    return this.articlesService.getArticlesByUser(filterDto, userId);
   }
-
   @Get('/:id')
   getArticleById(
     @Param('id') id: string,
