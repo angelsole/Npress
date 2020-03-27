@@ -41,7 +41,7 @@ export class ArticlesService {
     newArticle: UpdateArticleDto,
     user: User
   ): Promise<Article> {
-    if (!newArticle) {
+    if (!Object.entries(newArticle).length) {
       throw new BadRequestException(`Any value of article is required`)
     }
     const article = await this.getArticleById(id, user);
