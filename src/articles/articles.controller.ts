@@ -28,6 +28,14 @@ export class ArticlesController {
   ) {
     return this.articlesService.getArticlesByUser(filterDto, userId);
   }
+  @Get('/me')
+  @UseGuards(AuthGuard())
+  getOwnUserArticles(
+    @GetUser() user: User,
+    @Query(ValidationPipe) filterDto: GetArticlesFilterDto,
+  ) {
+    return this.articlesService.getOwnUserArticles(filterDto, user);
+  }
   @Get('/:id')
   getArticleById(
     @Param('id') id: string,

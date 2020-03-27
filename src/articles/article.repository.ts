@@ -27,6 +27,22 @@ export class ArticleRepository extends Repository<Article> {
     return articles;
   }
 
+  async getOwnUserArticles(filterDto: GetArticlesFilterDto, user: User): Promise<Article[]> {
+    const { search, limit, offset } = filterDto;
+    const query = this.createQueryBuilder('article')
+    .limit(limit)
+    .skip(offset);
+
+    query.where('article.userId = :userId', { userId: user.id })
+
+    if (search) {
+     query.andWhere('article.title LIKE :search OR article.description LIKE :search', { search: `%${search}%` });
+    }
+
+    const articles = await query.getMany();
+    return articles;
+  }
+
   async getArticlesByUser(filterDto: GetArticlesFilterDto, paramUserId: string): Promise<Article[]> {
     const { search, limit, offset } = filterDto;
     const query = this.createQueryBuilder('article')
@@ -49,7 +65,7 @@ export class ArticleRepository extends Repository<Article> {
     const article = new Article;
     article.title = title;
     article.body = body;
-    article.status = ArticleStatus.PUBLISHED;
+    article.status = ArticleStatus.DRAFT;
     article.user = user;
 
     await article.save();

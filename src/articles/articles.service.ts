@@ -36,6 +36,10 @@ export class ArticlesService {
     return this.articleRepository.createArticle(createArticleDto, user);
   }
 
+  async getOwnUserArticles(filterDto: GetArticlesFilterDto, user: User): Promise<Article[]> {
+    return this.articleRepository.getOwnUserArticles(filterDto, user);
+  }
+
   async updateArticle(
     id: string,
     newArticle: UpdateArticleDto,
